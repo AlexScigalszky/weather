@@ -1,0 +1,28 @@
+<div class="mt-3">
+  <table class="table table-striped text-center">
+    <thead>
+      <tr>
+        <th scope="col" (click)="orderByCountry()">País</th>
+        <th scope="col" (click)="orderByCity()">Ciudad</th>
+        <th scope="col">Clima</th>
+        <th scope="col">Sensación térmica</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let weather of weatherList; index as i">
+        <td> {{weather.id}} {{ weather.city.country.name }}</td>
+        <td>{{ weather.city.name }}</td>
+        <td>{{ weather.temperture }}º</td>
+        <td>{{ weather.sensation }}º</td>
+      </tr>
+    </tbody>
+
+    <tbody *ngIf="!weatherList?.length">
+      <tr>
+        <td colspan="5">
+          <no-result [message]="'No existen resultados'"></no-result>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

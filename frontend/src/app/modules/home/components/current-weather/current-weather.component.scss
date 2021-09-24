@@ -1,0 +1,12 @@
+.current-wheater {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  div {
+    display: inline;
+  }
+  label {
+    text-decoration-line: underline;
+    padding-right: 0.5rem;
+  }
+}

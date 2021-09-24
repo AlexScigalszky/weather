@@ -1,0 +1,21 @@
+form {
+  display: inline;
+
+  .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  mat-form-field {
+    padding-left: 1rem;
+    width: 100%;
+  }
+  mat-checkbox {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  button {
+    padding-left: 1rem;
+  }
+}

@@ -1,0 +1,23 @@
+<form [formGroup]="cityForm">
+  <div class="container">
+    <mat-form-field appearance="fill">
+      <mat-label>Selecciona una ciudad</mat-label>
+      <select matNativeControl required formControlName="city">
+        <option *ngFor="let city of cities" value="{{ city.id }}">
+          {{ city.name }}
+        </option>
+      </select>
+    </mat-form-field>
+
+    <mat-checkbox formControlName="historical">Incluir histórico</mat-checkbox>
+
+    <button
+      type="submit"
+      name="filter"
+      class="btn bg-success text-white shadow"
+      (click)="submit()"
+    >
+      Consultar
+    </button>
+  </div>
+</form>

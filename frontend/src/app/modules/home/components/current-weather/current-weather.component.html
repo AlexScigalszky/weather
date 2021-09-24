@@ -1,0 +1,14 @@
+<div *ngIf="weather" class="current-wheater">
+  <div>
+    <label for="city"> Ciudad: </label>
+    <div class="city">{{ weather.city.name }}</div>
+  </div>
+  <div>
+    <label for="temperture"> Clima: </label>
+    <div class="temperture">{{ weather.temperture }}º</div>
+  </div>
+  <div>
+    <label for="sensation"> Sensación térmica: </label>
+    <div class="sensation">{{ weather.sensation }}º</div>
+  </div>
+</div>

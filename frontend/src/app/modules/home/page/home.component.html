@@ -1,0 +1,30 @@
+<div id="content">
+  <app-city-form
+    *ngIf="cities$ | async as cities"
+    [cities]="cities"
+    (onSubmited)="onSearch($event)"
+  ></app-city-form>
+
+  <app-spinner [isLoading]="isLoading"></app-spinner>
+
+  <div *ngIf="apiData$ | async as apiData" class="result">
+    <div *ngIf="!isLoading">
+      <div class="current">
+        <app-current-weather [weather]="apiData.current"></app-current-weather>
+      </div>
+
+      <div class="historical" *ngIf="apiData.historical !== null">
+        <app-weather-table
+          [weatherList]="apiData.historical.list"
+          (orderByChanged)="orderByChange($event)"
+        ></app-weather-table>
+      </div>
+    </div>
+
+    <app-pagination
+      [class.hidden]="!apiData?.historical?.countTotal"
+      (changed)="paginationChange($event)"
+      [total]="apiData?.historical?.countTotal"
+    ></app-pagination>
+  </div>
+</div>
