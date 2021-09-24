@@ -1,6 +1,10 @@
 # Exam
 This is an example of  wheather application
 
+<p align="center"> 
+  <img src="docs/Capture.png" alt="Capture of application " /> 
+</p>
+
 # Backend
 ## startup
 - configure the following properties in appsettings.json
