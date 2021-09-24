@@ -1,0 +1,146 @@
+warning: LF will be replaced by CRLF in backend/src/API/appsettings.Development.json.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in frontend/src/app/layout/nav/nav.component.html.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in frontend/src/app/modules/home/page/home.component.html.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in frontend/src/app/modules/home/page/home.component.ts.
+The file will have its original line endings in your working directory
+[1mdiff --git a/backend/src/API/appsettings.Development.json b/backend/src/API/appsettings.Development.json[m
+[1mindex f4093d2..255c1d1 100644[m
+[1m--- a/backend/src/API/appsettings.Development.json[m
+[1m+++ b/backend/src/API/appsettings.Development.json[m
+[36m@@ -9,7 +9,7 @@[m
+   "AllowedHosts": "*",[m
+   "OpenWheater": {[m
+     "OpenWheaterAPIKey": "45185ded3a609da4bcc54406b4e95663",[m
+[31m-    "APILink": "http://api.openweathermap.org/data/2.5/weather"[m
+[32m+[m[32m    "APILink": "http://api.openweathermap.org/data/2.5/weatherALEx"[m
+   },[m
+   "AuthenticationOptions": {[m
+     "Secret": "b14ca5898a4e4133bbce2ea2315a1916",[m
+[1mdiff --git a/frontend/src/app/layout/nav/nav.component.html b/frontend/src/app/layout/nav/nav.component.html[m
+[1mindex a5b62ee..f04d17e 100644[m
+[1m--- a/frontend/src/app/layout/nav/nav.component.html[m
+[1m+++ b/frontend/src/app/layout/nav/nav.component.html[m
+[36m@@ -3,10 +3,10 @@[m
+     <mat-toolbar color="primary">[m
+       <div class="container">[m
+         <span routerLink="" class="branding spacer center d-none d-sm-inline d-md-none">[m
+[31m-          {{ 'Title' }}[m
+[32m+[m[32m          {{ 'Clima' }}[m
+         </span>[m
+         <span routerLink="" class="branding spacer d-none d-md-inline">[m
+[31m-          {{ 'Title' }}[m
+[32m+[m[32m          {{ 'Clima' }}[m
+         </span>[m
+         <span class="d-none d-md-inline">[m
+           <button mat-button class="nav-button" *ngFor="let item of navItems" [routerLink]="[item.link]"[m
+[1mdiff --git a/frontend/src/app/modules/home/page/home.component.html b/frontend/src/app/modules/home/page/home.component.html[m
+[1mindex 31de0f0..01cd561 100644[m
+[1m--- a/frontend/src/app/modules/home/page/home.component.html[m
+[1m+++ b/frontend/src/app/modules/home/page/home.component.html[m
+[36m@@ -10,7 +10,11 @@[m
+   <div *ngIf="apiData$ | async as apiData" class="result">[m
+     <div *ngIf="!isLoading">[m
+       <div class="current">[m
+[31m-        <app-current-weather [weather]="apiData.current"></app-current-weather>[m
+[32m+[m[32m        <app-current-weather[m
+[32m+[m[32m          *ngIf="apiData.current"[m
+[32m+[m[32m          [weather]="apiData.current"[m
+[32m+[m[32m        ></app-current-weather>[m
+[32m+[m[32m        <p *ngIf="!apiData.current">Servicio no disponible actualmente</p>[m
+       </div>[m
+ [m
+       <div class="historical" *ngIf="apiData.historical !== null">[m
+[1mdiff --git a/frontend/src/app/modules/home/page/home.component.ts b/frontend/src/app/modules/home/page/home.component.ts[m
+[1mindex b03eb91..583d9aa 100644[m
+[1m--- a/frontend/src/app/modules/home/page/home.component.ts[m
+[1m+++ b/frontend/src/app/modules/home/page/home.component.ts[m
+[36m@@ -7,6 +7,7 @@[m [mimport { WeatherService } from '@data/service/weather.service';[m
+ import { PaginationComponent } from '@shared/component/pagination/pagination.component';[m
+ import { BehaviorSubject, combineLatest, forkJoin, Observable, of } from 'rxjs';[m
+ import {[m
+[32m+[m[32m  catchError,[m
+   distinctUntilChanged,[m
+   filter,[m
+   flatMap,[m
+[36m@@ -31,34 +32,51 @@[m [mexport type Pagination = {[m
+   styleUrls: ['./home.component.scss'],[m
+ })[m
+ export class HomeComponent {[m
+[32m+[m[32m  private readonly catchAndReturnNull = catchError((_) => of(null));[m
+[32m+[m[32m  private readonly removeNulls = filter((x) => x !== null);[m
+[32m+[m[32m  private readonly mapToObject = ([filter, pagination, orderBy]: [[m
+[32m+[m[32m    CityFilter,[m
+[32m+[m[32m    Pagination,[m
+[32m+[m[32m    string,[m
+[32m+[m[32m  ]) => ({[m
+[32m+[m[32m    filter,[m
+[32m+[m[32m    pagination,[m
+[32m+[m[32m    orderBy,[m
+[32m+[m[32m  });[m
+[32m+[m
+   triggerSubject = new BehaviorSubject<CityFilter>(null);[m
+[32m+[m
+   // pagination[m
+   paginationSubject = new BehaviorSubject<Pagination>({[m
+     pageNumber: 1,[m
+     pageSize: PaginationComponent.DEFAULT_PAGE_SIZE,[m
+   });[m
+[32m+[m
+   // order by[m
+   orderBySubject = new BehaviorSubject<string>('City');[m
+[32m+[m
+   //Cities[m
+   cities$ = this.citiesService.getAll();[m
+[32m+[m
+   // API Data[m
+   apiData$: Observable<ApiData> = combineLatest([[m
+[31m-    this.triggerSubject.asObservable().pipe(filter((x) => x !== null)),[m
+[32m+[m[32m    this.triggerSubject.asObservable().pipe(this.removeNulls),[m
+     this.paginationSubject.asObservable().pipe(distinctUntilChanged()),[m
+     this.orderBySubject.asObservable().pipe(distinctUntilChanged()),[m
+   ]).pipe([m
+[31m-    tap((x) => (this.isLoading = true)),[m
+[31m-    map(([filter, pagination, orderBy]) => ({ filter, pagination, orderBy })),[m
+[32m+[m[32m    tap((_) => (this.isLoading = true)),[m
+[32m+[m[32m    map(this.mapToObject),[m
+     flatMap((data) =>[m
+       forkJoin([[m
+[31m-        this.weatherService.getCurrentOfCity(data.filter.cityId),[m
+[31m-        this.historical(data),[m
+[32m+[m[32m        this.weatherService[m
+[32m+[m[32m          .getCurrentOfCity(data.filter.cityId)[m
+[32m+[m[32m          .pipe(this.catchAndReturnNull),[m
+[32m+[m[32m        this.historical(data).pipe(this.catchAndReturnNull),[m
+       ]).pipe(map(([current, historical]) => ({ current, historical }))),[m
+     ),[m
+[31m-    tap((x) => (this.isLoading = false)),[m
+[31m-    tap(console.log),[m
+[32m+[m
+[32m+[m[32m    tap((_) => (this.isLoading = false)),[m
+   );[m
+[31m-  // loading[m
+   isLoading = false;[m
+ [m
+   constructor([m
+[36m@@ -80,10 +98,15 @@[m [mexport class HomeComponent {[m
+         })[m
+       : of(null);[m
+ [m
+[31m-  onSearch = (params: CityFilter) => this.triggerSubject.next(params);[m
+[32m+[m[32m  onSearch(params: CityFilter): void {[m
+[32m+[m[32m    this.triggerSubject.next(params);[m
+[32m+[m[32m  }[m
+ [m
+[31m-  paginationChange = (pagination: Pagination) =>[m
+[32m+[m[32m  paginationChange(pagination: Pagination): void {[m
+     this.paginationSubject.next(pagination);[m
+[32m+[m[32m  }[m
+ [m
+[31m-  orderByChange = (orderBy: string) => this.orderBySubject.next(orderBy);[m
+[32m+[m[32m  orderByChange(orderBy: string): void {[m
+[32m+[m[32m    this.orderBySubject.next(orderBy);[m
+[32m+[m[32m  }[m
+ }[m

@@ -10,7 +10,11 @@
   <div *ngIf="apiData$ | async as apiData" class="result">
     <div *ngIf="!isLoading">
       <div class="current">
-        <app-current-weather [weather]="apiData.current"></app-current-weather>
+        <app-current-weather
+          *ngIf="apiData.current"
+          [weather]="apiData.current"
+        ></app-current-weather>
+        <p *ngIf="!apiData.current">Servicio no disponible actualmente</p>
       </div>
 
       <div class="historical" *ngIf="apiData.historical !== null">

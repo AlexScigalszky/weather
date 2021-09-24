@@ -11,12 +11,12 @@ using System.Web;
 
 namespace Infrastructure.Services
 {
-    public class ExternalWeatherService : WebClient, IExternalWheatherService
+    public class ExternalWheatherService : WebClient, IExternalWheatherService
     {
         private const string MEASURE_UNIT = "metric";//metric, imperial, empty(kelvin)
         private readonly IOptions<Settings> _options;
 
-        public ExternalWeatherService(IOptions<Settings> options)
+        public ExternalWheatherService(IOptions<Settings> options)
         {
             _options = options;
         }
