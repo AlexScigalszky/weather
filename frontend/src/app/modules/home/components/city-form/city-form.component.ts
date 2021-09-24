@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { City } from '@data/schema/city';
 
 export type CityFilter = {
@@ -25,16 +25,18 @@ export class CityFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.cityForm = this.fb.group({
-      city: [this.cities?.length ? this.cities[0] : null],
-      historical: [false],
+      city: [null, Validators.required],
+      historical: [false, Validators.required],
     });
   }
 
   submit() {
-    const formResult = {
-      cityId: parseInt(this.cityForm.get('city').value, 10),
-      historical: this.cityForm.get('historical').value,
-    };
-    this.onSubmited.emit(formResult);
+    if (this.cityForm.valid) {
+      const formResult = {
+        cityId: parseInt(this.cityForm.get('city').value, 10),
+        historical: this.cityForm.get('historical').value,
+      };
+      this.onSubmited.emit(formResult);
+    }
   }
 }
